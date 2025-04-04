@@ -1,0 +1,37 @@
+<div class="content">
+  <i class="bi bi-arrow-left-short btn btn-outline-dark" (click)="goBack()"></i>
+  <h1>School Of Arts and Sciences {{ statusFilter | titlecase }} Employees </h1>
+  <div class="table-container" *ngIf="filteredEmployees.length > 0; else noEmployees">
+      <table>
+          <thead>
+              <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Employment Type</th>
+                <th>Employment Date</th>
+                <th>Status</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr  *ngFor="let employee of filteredEmployees">
+                  <td>{{ employee.id }}</td>
+                  <td>{{ employee.firstname }} {{ employee.middleName || '' }} {{ employee.lastname }}</td>
+                  <td>{{ employee.email }}</td>
+                  <td>{{ employee.major }}</td>
+                  <td>{{ employee.employmentType }}</td>
+                  <td>{{ employee.employmentDate }}</td>
+                  <td>{{ employee.status ?? 'onboarded' }}</td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+
+<ng-template #noEmployees>
+  <p class="alert alert-warning">⚠ No {{ statusFilter }} employees found in SBA.</p>
+</ng-template>
+</div>
+
+
+

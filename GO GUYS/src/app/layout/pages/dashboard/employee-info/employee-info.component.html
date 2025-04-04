@@ -1,0 +1,190 @@
+<div class="content">
+  <h1>Employee Information</h1>
+  <br>
+
+  <div class="search-container">
+    <!-- 🔍 Search by Last Name (First Letter) or Employee ID -->
+    <input type="text" class="search-box" [(ngModel)]="searchQuery" (input)="searchEmployee()" placeholder="Search by Last Name or Employee ID">
+
+    <!-- 🔽 Dropdown: Filter by Department -->
+    <label for="departmentDropdown"></label>
+    <select id="departmentDropdown" class="department-dropdown" [(ngModel)]="selectedDepartment" (change)="filterByDepartment()">
+      <option value="">All Schools</option>
+      <option value="SOC">School of Computing (SOC)</option>
+      <option value="SBA">School of Business and Accountancy (SBA)</option>
+      <option value="SEA">School of Engineering and Architecture (SEA)</option>
+      <option value="SAS">School of Arts and Sciences (SAS)</option>
+      <option value="SHTM">School of Hospitality and Tourism Management (SHTM)</option>
+      <option value="SED">School of Education (SED)</option>
+      <option value="SNAMS">School of Nursing and Allied Medical Sciences (SNAMS)</option>
+      <option value="CCJEF">College of Criminal Justice Education and Forensics (CCJEF)</option>
+    </select>
+  </div>
+  <!-- Employee List -->
+  <div class="employee-list">
+    <div *ngFor="let employee of filteredEmployees" class="employee-item">
+      <div class="profile-container">
+        <img [src]="employee.profileImageUrl || 'assets/default-profile.png'" alt="No Image" class="profile-img">
+      </div>
+      <div class="text-container">
+        <strong>{{ employee.firstname }} {{ employee.middlename || '' }} {{ employee.lastname }}</strong>
+      </div>
+      <div class="employee-actions">
+        <button class="button" (click)="openModal(employee)">View Details</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="filteredEmployees?.length === 0" class="no-data">
+    No employees found.
+  </div>
+
+  <!-- Employee Modal -->
+  <div class="modal-overlay" *ngIf="selectedEmployee">
+    <div class="modal-content scrollable">
+      <div class="modal-header">
+        <h1>Employee Information</h1>
+        <span class="close-btn" (click)="closeModal()">&times;</span>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-image">
+          <img [src]="selectedEmployee.profileImageUrl || 'assets/default-profile.png'" alt="No Image">
+        </div>
+
+        <div class="modal-details">
+          <!-- Name Section -->
+          <div class="info-group">
+            <label>Name:</label>
+            <span *ngIf="!isEditing">
+              {{ selectedEmployee.firstname }} {{ selectedEmployee.middlename || '' }} {{ selectedEmployee.lastname }}
+            </span>
+            <div *ngIf="isEditing">
+              <input type="text" [(ngModel)]="selectedEmployee.firstname" class="input-field" placeholder="First Name" />
+              <input type="text" [(ngModel)]="selectedEmployee.middlename" class="input-field" placeholder="Middle Name" />
+              <input type="text" [(ngModel)]="selectedEmployee.lastname" class="input-field" placeholder="Last Name" />
+            </div>
+          </div>
+
+          <div class="info-group">
+            <label>Employee ID:</label>
+            <span>{{ selectedEmployee.id }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Employee Email:</label>
+            <input *ngIf="isEditing" type="email" [(ngModel)]="selectedEmployee.email" class="input-field" />
+            <span *ngIf="!isEditing">{{ selectedEmployee.email }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Personal Email:</label>
+            <input *ngIf="isEditing" type="email" [(ngModel)]="selectedEmployee.personalEmail" class="input-field" />
+            <span *ngIf="!isEditing">{{ selectedEmployee.personalEmail }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Employment Date:</label>
+            <input *ngIf="isEditing" type="date" [(ngModel)]="selectedEmployee.employmentDate" class="input-field" />
+            <span *ngIf="!isEditing">{{ selectedEmployee.employmentDate }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Department:</label>
+            <select *ngIf="isEditing" [(ngModel)]="selectedEmployee.department" (change)="updateMajors()" class="input-field">
+              <option value="">Select</option>
+              <option *ngFor="let key of departmentKeys" [value]="key">{{ departments[key] }}</option>
+            </select>
+            <span *ngIf="!isEditing">
+              {{ selectedEmployee.department ? (departments[selectedEmployee.department] || selectedEmployee.department) : 'N/A' }}
+            </span>
+          </div>
+
+          <!-- 🎓 Majors Selection -->
+          <div class="info-group">
+            <label>Major:</label>
+            <select *ngIf="isEditing" [(ngModel)]="selectedEmployee.major" class="input-field">
+              <option value="">Select Major</option>
+              <option *ngFor="let major of availableMajors" [value]="major">{{ major }}</option>
+            </select>
+            <span *ngIf="!isEditing">{{ selectedEmployee.major || 'N/A' }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>School Credentials:</label>
+            <select *ngIf="isEditing" [(ngModel)]="selectedEmployee.schoolcredentials" class="input-field">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <span *ngIf="!isEditing">{{ selectedEmployee.schoolcredentials }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Training Certificate:</label>
+            <select *ngIf="isEditing" [(ngModel)]="selectedEmployee.trainingcertificate" class="input-field">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <span *ngIf="!isEditing">{{ selectedEmployee.trainingcertificate }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Certificate of Employment:</label>
+            <select *ngIf="isEditing" [(ngModel)]="selectedEmployee.certificateofemployment" class="input-field">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <span *ngIf="!isEditing">{{ selectedEmployee.certificateofemployment }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Research:</label>
+            <select *ngIf="isEditing" [(ngModel)]="selectedEmployee.research" class="input-field">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <span *ngIf="!isEditing">{{ selectedEmployee.research }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>NBI Clearance:</label>
+            <select *ngIf="isEditing" [(ngModel)]="selectedEmployee.nbiclearance" class="input-field">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <span *ngIf="!isEditing">{{ selectedEmployee.nbiclearance }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Medical Certificate:</label>
+            <select *ngIf="isEditing" [(ngModel)]="selectedEmployee.medicalcertificate" class="input-field">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <span *ngIf="!isEditing">{{ selectedEmployee.medicalcertificate }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Status:</label>
+            <span>{{ selectedEmployee.status }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Effective Date (Offboarding):</label>
+            <span>{{ selectedEmployee.effectiveDate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="button" *ngIf="!isEditing" (click)="enableEditing()">Edit</button>
+        <button class="button save" *ngIf="isEditing" (click)="saveUpdate()">Save</button>
+        <button class="button cancel" (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="filteredEmployees?.length === 0" class="no-data">
+    No employees found.
+  </div>
+</div>
+

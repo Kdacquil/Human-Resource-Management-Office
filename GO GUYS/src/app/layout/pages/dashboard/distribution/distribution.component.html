@@ -1,0 +1,16 @@
+<div *ngIf="showContent">
+  <div class="content">
+    <h1>Employee Distribution Overview</h1>
+
+    <h2>Onboarded Employees</h2>
+    <div class="chart-container">
+      <canvas #onboardedChart></canvas> <!-- ✅ Match ViewChild name in TS -->
+    </div>
+
+    <h2>Offboarded Employees</h2>
+    <div class="chart-container">
+      <canvas #offboardedChart></canvas> <!-- ✅ Match ViewChild name in TS -->
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

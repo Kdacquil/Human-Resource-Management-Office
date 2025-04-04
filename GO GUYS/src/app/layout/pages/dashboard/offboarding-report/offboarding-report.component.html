@@ -1,0 +1,71 @@
+<div class="content">
+  <h1>Offboarding Report</h1>
+
+  <!-- 🔍 Search & Filters -->
+  <div class="search-container">
+    <!-- 🔍 Search by Last Name (First Letter) or Employee ID -->
+    <input
+      type="text"
+      class="search-box"
+      [(ngModel)]="searchQuery"
+      (input)="searchEmployee()"
+      placeholder="Search by Last Name or Employee ID"
+    >
+
+    <!-- 🔽 Select Department (Dropdown) -->
+    <label for="departmentDropdown"></label>
+    <select id="departmentDropdown" class="department-dropdown" [(ngModel)]="selectedDepartment" (change)="filterByDepartment()">
+      <option value="">All Schools</option>
+      <option value="SOC">School of Computing (SOC)</option>
+      <option value="SBA">School of Business and Accountancy (SBA)</option>
+      <option value="SEA">School of Engineering and Architecture (SEA)</option>
+      <option value="SAS">School of Arts and Sciences (SAS)</option>
+      <option value="SHTM">School of Hospitality and Tourism Management (SHTM)</option>
+      <option value="SED">School of Education (SED)</option>
+      <option value="SNAMS">School of Nursing and Allied Medical Sciences (SNAMS)</option>
+      <option value="CCJEF">College of Criminal Justice Education and Forensics (CCJEF)</option>
+    </select>
+
+    <!-- 📅 Date Range Filters -->
+    <label for="fromDate"><strong>From:</strong></label>
+    <input type="date" id="fromDate" class="date-search" [(ngModel)]="fromDate" (change)="filterByDate()">
+
+    <label for="toDate"><strong>To:</strong></label>
+    <input type="date" id="toDate" class="date-search" [(ngModel)]="toDate" (change)="filterByDate()">
+  </div>
+
+  <!-- 📋 Employee Table -->
+  <table class="table-container">
+    <thead>
+      <tr>
+        <th>Employee ID</th>
+        <th>Employee's Name</th>
+        <th>Department</th>
+        <th>Reason for Offboarding</th>
+        <th>Effective Offboarding Date</th>
+        <th>Exit Interview Status</th>
+        <th>Clearance Status</th>
+        <th>Certification</th>
+        <th>Recommendation</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let employee of filteredEmployees">
+        <td><strong>{{ employee.employeeId || 'N/A' }}</strong></td>
+        <td><strong>{{ employee.firstname }} {{ employee.middleName }}</strong></td>
+        <td><strong>{{ employee.department || 'N/A' }}</strong></td>
+        <td><strong>{{ employee.offboardingReason || 'N/A' }}</strong></td>
+        <td><strong>{{ employee.effectiveDate || 'N/A' }}</strong></td>
+        <td><strong>{{ employee.exitInterview || 'N/A' }}</strong></td>
+        <td><strong>{{ employee.clearanceStatus || 'N/A' }}</strong></td>
+        <td><strong>{{ employee.certificationStatus || 'N/A' }}</strong></td>
+        <td><strong>{{ employee.recommendation || 'N/A' }}</strong></td>
+        <td><strong>{{ employee.recommendationComment || 'N/A' }}</strong></td>
+      </tr>
+      <tr *ngIf="filteredEmployees.length === 0">
+        <td colspan="10" class="no-data">No employees found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
